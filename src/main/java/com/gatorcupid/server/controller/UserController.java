@@ -1,20 +1,25 @@
 package com.gatorcupid.server.controller;
 
+import java.text.ParseException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gatorcupid.server.beans.request.SignupRequest;
+import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
 import com.gatorcupid.server.beans.response.ResponseBean;
 import com.gatorcupid.server.beans.response.UserResponse;
 import com.gatorcupid.server.constants.ApiUrl;
 import com.gatorcupid.server.constants.Errorcode;
+import com.gatorcupid.server.dao.UserDao;
 import com.gatorcupid.server.exception.GCException;
 import com.gatorcupid.server.model.User;
 import com.gatorcupid.server.service.UserService;
@@ -26,6 +31,9 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserDao userDao;
 	
 	private static final Logger logger = Logger.getLogger(UserController.class);
 
@@ -61,6 +69,41 @@ public class UserController {
 		
 		ResponseBean responseBean = new ResponseBean(HttpStatus.OK.value(), "Success",ur);
 		logger.info("Signin API Response>>>"+ responseBean);
+		return new ResponseEntity<ResponseBean>(responseBean, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = ApiUrl.UPDATE_USER_PROFILE, method = RequestMethod.POST)
+	public ResponseEntity<ResponseBean> updateUserProfile(@PathVariable("id") Long userId, @RequestBody UpdateUserProfileRequest request)
+			throws GCException, ParseException {
+
+		logger.info("UpdateUserProfile API >>> " +request);
+		request.validateRequest();
+		User user = userDao.getOne(userId);
+		if(user == null) {
+			throw new GCException(Errorcode.USER_NOT_FOUND, "USER_NOT_FOUND");
+		}
+		userService.updateUserProfile(user, request);
+		
+		ResponseBean responseBean = new ResponseBean(HttpStatus.OK.value(), "Success");
+		return new ResponseEntity<ResponseBean>(responseBean,HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = ApiUrl.GET_USER_PROFILE, method = RequestMethod.GET)
+	public ResponseEntity<ResponseBean> getUserProfile(@PathVariable("id") Long userId)
+			throws GCException {
+
+		logger.info("GetUserProfile API >>> userId:" + userId.toString());
+		User user = userDao.getOne(userId);
+		if(user == null) {
+			throw new GCException(Errorcode.USER_NOT_FOUND, "USER_NOT_FOUND");
+		}
+		
+		UserResponse ur = new UserResponse(user);
+		
+		ResponseBean responseBean = new ResponseBean(HttpStatus.OK.value(), "Success",ur);
+		logger.info("GetUserProfile API Response>>>"+ responseBean);
 		return new ResponseEntity<ResponseBean>(responseBean, HttpStatus.OK);
 	}
 

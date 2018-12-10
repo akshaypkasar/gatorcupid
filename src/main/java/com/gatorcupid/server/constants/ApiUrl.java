@@ -6,7 +6,7 @@ public class ApiUrl {
 	public static final String SIGNUP = "/user/signup";
 	public static final String SIGNIN = "/user/signin";
 	public static final String SIGNOUT = "/user/signout";
-	public static final String SETUSERPROFILE = "/user/profile";
-	
+	public static final String UPDATE_USER_PROFILE = "/user/{id}/profile";
+	public static final String GET_USER_PROFILE = "/user/{id}/profile";
 
 }

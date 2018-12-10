@@ -18,13 +18,12 @@ public class SignInRequest implements RequestBean {
 	
 	private static final Logger logger = Logger.getLogger(SignInRequest.class);
 	
-	@JsonProperty("email")
-	@NotNull
-	private String email;
 	
-	@JsonProperty("code")
+	private String email;
 	private String code;
 
+	@JsonProperty("email")
+	@NotNull
 	public String getEmail() {
 		return email;
 	}
@@ -33,6 +32,7 @@ public class SignInRequest implements RequestBean {
 		this.email = email;
 	}
 
+	@JsonProperty("code")
 	public String getCode() {
 		return code;
 	}
@@ -42,7 +42,7 @@ public class SignInRequest implements RequestBean {
 	}
 
 	@Override
-	public void validateRequest() throws Exception {
+	public void validateRequest() throws GCException {
 		
 		EmailValidator validator = EmailValidator.getInstance();
 		if (validator.isValid(email)) {

@@ -1,6 +1,8 @@
 package com.gatorcupid.server.service.impl;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
@@ -8,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
 import com.gatorcupid.server.constants.Errorcode;
 import com.gatorcupid.server.constants.GcConstant;
+import com.gatorcupid.server.constants.Gender;
+import com.gatorcupid.server.constants.Intention;
+import com.gatorcupid.server.constants.InterestedIn;
 import com.gatorcupid.server.constants.State;
 import com.gatorcupid.server.dao.UserDao;
 import com.gatorcupid.server.exception.GCException;
@@ -93,6 +99,35 @@ public class UserServiceImpl implements UserService{
 	public void setUserPassword(User user) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void updateUserProfile(User user, UpdateUserProfileRequest request) throws ParseException {
+		if(request.getName() !=null && !request.getName().isEmpty())
+			user.setName(request.getName());
+		
+		if(request.getGender()!=null)
+			user.setGender(Gender.valueOf(request.getGender()));
+		
+		if(request.getBirthYear() != null && !request.getBirthYear().isEmpty()) {
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
+			java.util.Date date = sdf1.parse(request.getBirthYear());
+			java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
+			user.setBirthYear(sqlDate);
+		}
+		
+		//if(request.getAbout().isEmpty())
+		user.setAbout(request.getAbout());
+		
+		if(request.getIntention()!=null)
+			user.setIntention(Intention.valueOf(request.getIntention()));
+		
+		if(request.getInterestedIn()!=null)
+			user.setInterestedIn(InterestedIn.valueOf(request.getInterestedIn()));
+		
+		user.setAbout(request.getMajor());
+		
+		userdao.saveAndFlush(user);
 	}
 
 }

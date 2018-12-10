@@ -1,6 +1,7 @@
 package com.gatorcupid.server.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
 import com.gatorcupid.server.constants.Gender;
 import com.gatorcupid.server.constants.Intention;
 import com.gatorcupid.server.constants.InterestedIn;
@@ -46,7 +48,7 @@ public class User implements Serializable {
 	private String password;
 	
 	@Column(name="birth_year")
-	private Integer birthYear;
+	private Date birthYear;
 	
 	@Column(name="interested_in")
 	private InterestedIn interestedIn;
@@ -83,6 +85,8 @@ public class User implements Serializable {
 	
 	/*@OneToMany(mappedBy="user")
 	private List<UserSession> userSessions = new ArrayList<>();*/
+	@OneToMany(mappedBy="user")
+	private List<ProfilePic> profilePics = new ArrayList<>();
 
 	public User() {}
 
@@ -141,11 +145,11 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Integer getBirthYear() {
+	public Date getBirthYear() {
 		return birthYear;
 	}
 
-	public void setBirthYear(Integer birthYear) {
+	public void setBirthYear(Date birthYear) {
 		this.birthYear = birthYear;
 	}
 
@@ -235,7 +239,11 @@ public class User implements Serializable {
 	public void setIsProfileCreated(State isProfileCreated) {
 		this.isProfileCreated = isProfileCreated;
 	}
-	
-	
+	public List<ProfilePic> getProfilePics() {
+		return profilePics;
+	}
+	public void setProfilePics(List<ProfilePic> profilePics) {
+		this.profilePics = profilePics;
+	}
 	
 }

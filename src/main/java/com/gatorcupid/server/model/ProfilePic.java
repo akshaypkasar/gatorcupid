@@ -43,4 +43,61 @@ public class ProfilePic implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
+
+	public ProfilePic() {}
+	
+	public ProfilePic(User user) {
+		this.user = user;
+		this.createdTs = new Timestamp(System.currentTimeMillis());
+		this.updatedTs = new Timestamp(System.currentTimeMillis());
+		this.status = Status.ACTIVE;
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Timestamp getCreatedTs() {
+		return createdTs;
+	}
+
+	public void setCreatedTs(Timestamp createdTs) {
+		this.createdTs = createdTs;
+	}
+
+	public Timestamp getUpdatedTs() {
+		return updatedTs;
+	}
+
+	public void setUpdatedTs(Timestamp updatedTs) {
+		this.updatedTs = updatedTs;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

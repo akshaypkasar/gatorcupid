@@ -19,13 +19,11 @@ public class SignupRequest implements RequestBean {
 	
 	private static final Logger logger = Logger.getLogger(SignupRequest.class);
 	
-	@JsonProperty("email")
-	@NotNull
 	private String email;
-	
-	@JsonProperty("code")
 	private String code;
 
+	@JsonProperty("email")
+	@NotNull
 	public String getEmail() {
 		return email;
 	}
@@ -34,6 +32,7 @@ public class SignupRequest implements RequestBean {
 		this.email = email;
 	}
 
+	@JsonProperty("code")
 	public String getCode() {
 		return code;
 	}
