@@ -1,8 +1,10 @@
 package com.gatorcupid.server.service;
 
 import java.text.ParseException;
+import java.util.List;
 
 import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
+import com.gatorcupid.server.beans.response.UserResponse;
 import com.gatorcupid.server.exception.GCException;
 import com.gatorcupid.server.model.User;
 
@@ -14,6 +16,9 @@ public interface UserService {
 	
 	void setUserPassword(User user);
 	
-	public void updateUserProfile(User user, UpdateUserProfileRequest request) throws ParseException;
-
+	void updateUserProfile(User user, UpdateUserProfileRequest request) throws ParseException;
+	
+	//void updateUserPic(User user, UpdateUserPicRequest request);
+	
+	List<UserResponse> fetchBrowseList(User user, Integer offset, Integer pageSize);
 }

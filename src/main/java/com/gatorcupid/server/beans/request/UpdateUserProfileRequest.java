@@ -24,7 +24,9 @@ public class UpdateUserProfileRequest implements RequestBean {
 	private String about;
 	private String major;
 	private Integer isProfileCreated;
-	private List<String> profilePics;
+	//private List<String> profilePics;
+	private String profilePic;
+	private Integer profilePicAction;
 	
 	@Override
 	public void validateRequest() throws GCException {	
@@ -128,13 +130,22 @@ public class UpdateUserProfileRequest implements RequestBean {
 		this.isProfileCreated = isProfileCreated;
 	}
 
-	@JsonProperty("profilePics")
-	public List<String> getProfilePics() {
-		return profilePics;
+	@JsonProperty("profilePic")
+	public String getProfilePic() {
+		return profilePic;
 	}
 
-	public void setProfilePics(List<String> profilePics) {
-		this.profilePics = profilePics;
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	@JsonProperty("profilePicAction")
+	public Integer getProfilePicAction() {
+		return profilePicAction;
+	}
+
+	public void setProfilePicAction(Integer profilePicAction) {
+		this.profilePicAction = profilePicAction;
 	}
 
 }

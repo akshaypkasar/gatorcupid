@@ -31,7 +31,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue
 	@Column(name="id")
 	private Long id;
 	
@@ -85,8 +85,11 @@ public class User implements Serializable {
 	
 	/*@OneToMany(mappedBy="user")
 	private List<UserSession> userSessions = new ArrayList<>();*/
-	@OneToMany(mappedBy="user")
-	private List<ProfilePic> profilePics = new ArrayList<>();
+	/*@OneToMany(mappedBy="user")
+	private List<ProfilePic> profilePics = new ArrayList<>();*/
+	
+	@Column(name="profilePic")
+	private String profilePic;
 
 	public User() {}
 
@@ -239,11 +242,11 @@ public class User implements Serializable {
 	public void setIsProfileCreated(State isProfileCreated) {
 		this.isProfileCreated = isProfileCreated;
 	}
-	public List<ProfilePic> getProfilePics() {
-		return profilePics;
+	public String getProfilePic() {
+		return profilePic;
 	}
-	public void setProfilePics(List<ProfilePic> profilePics) {
-		this.profilePics = profilePics;
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
 	}
 	
 }

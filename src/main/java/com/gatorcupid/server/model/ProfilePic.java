@@ -39,6 +39,9 @@ public class ProfilePic implements Serializable {
 
 	@Column(name="url")
 	private String url;
+	
+	@Column(name="data")
+	private String data;
 
 	@ManyToOne
 	@JoinColumn(name="user_id")
@@ -99,5 +102,13 @@ public class ProfilePic implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 }

@@ -1,6 +1,10 @@
 package com.gatorcupid.server.beans.response;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -25,6 +29,8 @@ public class UserResponse {
 	private String about;
 	private String major;
 	private Integer isProfileCreated;
+	private String profilePic;
+	private Integer age;
 	
 	@JsonProperty("id")
 	public Long getId() {
@@ -97,6 +103,20 @@ public class UserResponse {
 	public void setIsProfileCreated(Integer isProfileCreated) {
 		this.isProfileCreated = isProfileCreated;
 	}
+	@JsonProperty("profilePic")
+	public String getProfilePic() {
+		return profilePic;
+	}
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+	@JsonProperty("age")
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 	
 	public UserResponse() {}
 	
@@ -112,6 +132,8 @@ public class UserResponse {
 		this.about = user.getAbout();
 		this.major = user.getMajor();
 		this.isProfileCreated = user.getIsProfileCreated() != null ? user.getIsProfileCreated().getValue() : null;
+		this.profilePic = (user.getProfilePic() != null && !user.getProfilePic().isEmpty()) ? user.getProfilePic() : null;
+		this.age = user.getBirthYear() != null ? calculateUserAge() : null;
 	}
 	
 	@Override
@@ -129,5 +151,37 @@ public class UserResponse {
 		}
 		return str;
 	}
+	
+	public Integer calculateUserAge(){
+
+        Date date = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = sdf.parse(this.getBirthYear());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(date == null) return 0;
+
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.setTime(date);
+
+        Integer year = dob.get(Calendar.YEAR);
+        Integer month = dob.get(Calendar.MONTH);
+        Integer day = dob.get(Calendar.DAY_OF_MONTH);
+
+        dob.set(year, month+1, day);
+
+        Integer age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)){
+            age--;
+        }
+        return age;
+    }
+	
 	
 }

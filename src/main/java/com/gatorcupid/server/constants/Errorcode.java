@@ -11,6 +11,8 @@ public class Errorcode {
 	public static final int INVALID_CREDENTIALS = 1004;
 	public static final int USER_NOT_FOUND=1005;
 	
+	public static final int INVALID_ACTION_TYPE = 1006;
+	
 	
 
 }

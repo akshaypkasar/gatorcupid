@@ -3,14 +3,20 @@ package com.gatorcupid.server.service.impl;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
+import com.gatorcupid.server.beans.response.UserResponse;
 import com.gatorcupid.server.constants.Errorcode;
 import com.gatorcupid.server.constants.GcConstant;
 import com.gatorcupid.server.constants.Gender;
@@ -43,7 +49,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void sendSignupEmail(String email) throws UnirestException, GCException {
-		User user = userdao.findByEmail(email);
+		User user = userdao.findUnregisteredByEmail(email);
 		if(user != null && user.getIsValidated() == State.TRUE) {
 			logger.error("EMAIL_ALREADY_REGISTERED");
 			throw new GCException(Errorcode.EMAIL_ALREADY_REGISTERED, "EMAIL_ALREADY_REGISTERED");
@@ -76,7 +82,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User validateUserCredentials(String email, String code) throws GCException {
-		User user = userdao.findByEmail(email);
+		User user = userdao.findUnregisteredByEmail(email);
 		if(user == null) {
 			logger.error("INVALID_EMAIL_ADDRESS");
 			throw new GCException(Errorcode.INVALID_EMAIL_ADDRESS, "INVALID_EMAIL_ADDRESS");
@@ -110,9 +116,9 @@ public class UserServiceImpl implements UserService{
 			user.setGender(Gender.valueOf(request.getGender()));
 		
 		if(request.getBirthYear() != null && !request.getBirthYear().isEmpty()) {
-			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 			java.util.Date date = sdf1.parse(request.getBirthYear());
-			java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
+			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
 			user.setBirthYear(sqlDate);
 		}
 		
@@ -127,7 +133,33 @@ public class UserServiceImpl implements UserService{
 		
 		user.setAbout(request.getMajor());
 		
+		/*if(request.getProfilePicAction() == 0) {
+			user.setProfilePic(null);
+		}else if(request.getProfilePicAction() == 1) {
+			user.setProfilePic(request.getProfilePic());
+		}*/
+		user.setProfilePic(request.getProfilePic());
+		
+		user.setIsProfileCreated(State.TRUE);
 		userdao.saveAndFlush(user);
 	}
+
+	@Override
+	public List<UserResponse> fetchBrowseList(User user, Integer pageSize, Integer pageNo) {
+		
+		pageSize = pageSize == null ? 1000 : pageSize;	//1000 is the max pageSize supported by spring data JPA
+		pageNo = pageNo == null ? 0 : pageNo;
+		
+		Pageable pageable = new PageRequest(pageNo, pageSize);
+		Page<User> userProfiles = userdao.findBrowsingListByUserId(user.getId(), Gender.valueOf(user.getInterestedIn().getValue()), pageable);
+		List<UserResponse> userResponseList = new ArrayList<>();
+		for(User u: userProfiles.getContent()) {
+			UserResponse ur = new UserResponse(u);
+			userResponseList.add(ur);
+		}
+		return userResponseList;
+	}
+	
+	
 
 }

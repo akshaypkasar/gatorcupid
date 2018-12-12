@@ -3,30 +3,31 @@ package com.gatorcupid.server.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum InterestedIn {
-	
-	OTHER(0), MEN(1),WOMEN(2), BOTH(3);
+public enum PicAction {
+
+	DELETE(0), ADD(1);
 	
 	int value;
 	
-	InterestedIn(int value){
+	PicAction(int value){
 		this.value = value;
 	}
 	
 	public int getValue(){
 		return value;
 	}
-
-	private static Map<Integer, InterestedIn> map = new HashMap<Integer, InterestedIn>();
+	
+	private static Map<Integer, PicAction> map = new HashMap<Integer, PicAction>();
 
     static {
-        for (InterestedIn legEnum : InterestedIn.values()) {
+        for (PicAction legEnum : PicAction.values()) {
             map.put(legEnum.value, legEnum);
         }
     }
 
 
-    public static InterestedIn valueOf(int legNo) {
+    public static PicAction valueOf(int legNo) {
         return map.get(legNo);
     }
+
 }

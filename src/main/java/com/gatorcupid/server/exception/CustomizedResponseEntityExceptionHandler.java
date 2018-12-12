@@ -20,7 +20,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
   @ExceptionHandler(GCException.class)
   public final ResponseEntity<ExceptionResponse> handleAllExceptions(GCException ex, WebRequest request) {
 	  ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getCode(), ex.getErrorMessage());
-	  logger.error(ex);
+	  logger.debug("GCException StackTrace>>>\n"+ex.toString()+"\nex");
+	  
 	  return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

@@ -1,6 +1,7 @@
 package com.gatorcupid.server.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gatorcupid.server.beans.request.SignupRequest;
 import com.gatorcupid.server.beans.request.UpdateUserProfileRequest;
+import com.gatorcupid.server.beans.response.BrowseResponse;
 import com.gatorcupid.server.beans.response.ResponseBean;
 import com.gatorcupid.server.beans.response.UserResponse;
 import com.gatorcupid.server.constants.ApiUrl;
@@ -79,7 +82,7 @@ public class UserController {
 
 		logger.info("UpdateUserProfile API >>> " +request);
 		request.validateRequest();
-		User user = userDao.getOne(userId);
+		User user = userDao.findUserById(userId);
 		if(user == null) {
 			throw new GCException(Errorcode.USER_NOT_FOUND, "USER_NOT_FOUND");
 		}
@@ -95,7 +98,7 @@ public class UserController {
 			throws GCException {
 
 		logger.info("GetUserProfile API >>> userId:" + userId.toString());
-		User user = userDao.getOne(userId);
+		User user = userDao.findUserById(userId);
 		if(user == null) {
 			throw new GCException(Errorcode.USER_NOT_FOUND, "USER_NOT_FOUND");
 		}
@@ -106,5 +109,25 @@ public class UserController {
 		logger.info("GetUserProfile API Response>>>"+ responseBean);
 		return new ResponseEntity<ResponseBean>(responseBean, HttpStatus.OK);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = ApiUrl.GET_BROWSE_PROFILE, method = RequestMethod.GET)
+	public ResponseEntity<ResponseBean> getBrowseProfile(@PathVariable("id") Long userId, 
+			@RequestParam(value= "pageSize", defaultValue = "1000")Integer pageSize, 
+			@RequestParam(value= "pageNo", defaultValue = "0") Integer pageNo)
+			throws GCException {
 
+		logger.info("GetBrowseProfile API >>> userId:" + userId.toString() + "\n>>> offset:" + pageSize + "\n>>> pageSize:" + pageNo);
+		User user = userDao.findUserById(userId);
+		if(user == null) {
+			throw new GCException(Errorcode.USER_NOT_FOUND, "USER_NOT_FOUND");
+		}
+		
+		BrowseResponse browseResponse = new BrowseResponse(userService.fetchBrowseList(user, pageSize, pageNo));
+		
+		ResponseBean responseBean = new ResponseBean(HttpStatus.OK.value(), "Success",browseResponse);
+		logger.info("GetBrowseProfile API Response>>>"+ responseBean);
+		return new ResponseEntity<ResponseBean>(responseBean, HttpStatus.OK);
+	}
+	
 }

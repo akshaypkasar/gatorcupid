@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum Gender {
 
-	MALE(1), FEMALE(2), OTHER(3);
+	 OTHER(0), MALE(1), FEMALE(2);
 	
 	int value;
 	private static Map<Integer, Gender> map = new HashMap<Integer, Gender>();
